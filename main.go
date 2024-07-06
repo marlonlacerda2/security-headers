@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/spf13/cobra"
 )
 
 func checkHeaders(url string) {
@@ -34,7 +36,21 @@ func checkHeaders(url string) {
 }
 
 func main() {
-	// URL da aplicação a ser testada
-	url := "https://studiovisual.com.br"
-	checkHeaders(url)
+	var url string
+
+	var rootCmd = &cobra.Command{
+		Use:   "security-checker",
+		Short: "Security Checker verifica os headers de segurança de uma aplicação web.",
+		Run: func(cmd *cobra.Command, args []string) {
+			if url == "" {
+				fmt.Println("Você deve fornecer uma URL. Use o comando 'security-checker --url <URL>'")
+				return
+			}
+			checkHeaders(url)
+		},
+	}
+
+	rootCmd.Flags().StringVarP(&url, "url", "u", "", "URL da aplicação a ser testada")
+
+	rootCmd.Execute()
 }
